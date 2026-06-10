@@ -1,2 +1,0 @@
-# nkwrzmw_project
-

@@ -60,3 +60,17 @@ def total_cost(distances: list[float], src: int) -> float:
 
     return total
 
+def find_best_runway(graph: Graph, capital: int) -> tuple[int | None, float]:
+  
+    best_cost = inf
+    best_edge_id = None
+    
+    for edge_id, (u, v, weight) in enumerate(graph.edges):
+        distances = dijkstra(graph, capital, banned_edge=edge_id)
+        current_cost = total_cost(distances, capital)
+        
+        if current_cost < best_cost:
+            best_cost = current_cost
+            best_edge_id = edge_id
+            
+    return best_edge_id, best_cost

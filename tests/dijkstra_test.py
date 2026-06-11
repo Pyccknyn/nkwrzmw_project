@@ -6,7 +6,7 @@ from math import inf
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from dijkstra import Graph, dijkstra, total_cost
+from dijkstra import Graph, dijkstra, total_cost, find_best_runway
 
 
 class DijkstraTests(unittest.TestCase):
@@ -42,6 +42,28 @@ class DijkstraTests(unittest.TestCase):
         self.assertEqual(distances[3], inf)
         self.assertEqual(total_cost(distances, 1), inf)
 
+
+    def test_find_best_runway_selects_optimal_edge(self) -> None:
+        graph = Graph(4)
+        id_expensive = graph.add_edge(1, 2, 10)  
+        id_cheap = graph.add_edge(1, 2, 1)       
+        graph.add_edge(2, 3, 1)
+        graph.add_edge(2, 4, 1)
+        
+        best_edge_id, best_cost = find_best_runway(graph, 1)
+        
+        self.assertEqual(best_edge_id, id_expensive)
+        self.assertEqual(best_cost, 5)
+
+    def test_find_best_runway_returns_none_if_all_bridges(self) -> None:
+        graph = Graph(3)
+        graph.add_edge(1, 2, 5)
+        graph.add_edge(2, 3, 5)
+    
+        best_edge_id, best_cost = find_best_runway(graph, 1)
+        
+        self.assertIsNone(best_edge_id)
+        self.assertEqual(best_cost, inf)
 
 if __name__ == "__main__":
     unittest.main()

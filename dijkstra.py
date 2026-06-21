@@ -126,16 +126,55 @@ def total_cost(distances: list[float], src: int) -> float:
     return total
 
 def find_best_runway(graph: Graph, capital: int) -> tuple[int | None, float]:
-  
+
     best_cost = inf
     best_edge_id = None
-    
+
     for edge_id, (u, v, weight) in enumerate(graph.edges):
         distances = dijkstra(graph, capital, banned_edge=edge_id)
         current_cost = total_cost(distances, capital)
-        
+
         if current_cost < best_cost:
             best_cost = current_cost
             best_edge_id = edge_id
-            
+
     return best_edge_id, best_cost
+
+
+def dijkstra_paths(
+    graph: Graph, src: int, banned_edge: int | None = None
+) -> tuple[list[float], list[int]]:
+    distances = [inf] * (graph.n + 1)
+    parents = [-1] * (graph.n + 1)
+    distances[src] = 0
+
+    queue: list[tuple[float, int]] = [(0, src)]
+
+    while queue:
+        current_distance, vertex = heappop(queue)
+        if current_distance != distances[vertex]:
+            continue
+        for neighbor, weight, edge_id in graph.adj[vertex]:
+            if edge_id == banned_edge:
+                continue
+            candidate = current_distance + weight
+            if candidate < distances[neighbor]:
+                distances[neighbor] = candidate
+                parents[neighbor] = vertex
+                heappush(queue, (candidate, neighbor))
+
+    return distances, parents
+
+
+def reconstruct_path(parents: list[int], src: int, dest: int) -> list[int]:
+    if dest == src:
+        return [src]
+    path: list[int] = []
+    v = dest
+    while v != src and v != -1:
+        path.append(v)
+        v = parents[v]
+    if v == -1:
+        return []
+    path.append(src)
+    return path[::-1]

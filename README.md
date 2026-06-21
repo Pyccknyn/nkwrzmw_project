@@ -7,6 +7,25 @@ ten odcinek tak, aby po jego usunięciu **suma najkrótszych odległości ze sto
 
 ---
 
+## Uruchomienie
+
+```
+ElNino.exe --plik moj_plik.txt
+ElNino.exe --plik C:\Users\filip\Desktop\graf.txt --stolica 2
+```
+
+Plik musi być w formacie `wierzcholek1,wierzcholek2,waga` — jeden odcinek na linię:
+
+```
+1,2,4
+1,3,2
+2,3,1
+```
+
+Domyślnie program używa `dane.txt` znajdującego się obok pliku exe.
+
+---
+
 ## 1. Model problemu
 
 - Sieć autostrad to **graf nieskierowany ważony** `G = (V, E)`:

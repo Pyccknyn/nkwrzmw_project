@@ -10,6 +10,7 @@ ten odcinek tak, aby po jego usunięciu **suma najkrótszych odległości ze sto
 ## Uruchomienie
 
 ```
+python main.py --plik dane.txt --stolica 1
 ElNino.exe --plik plik.txt
 ElNino.exe --plik *ścieżka do pliku* --stolica 2
 ```
@@ -23,6 +24,100 @@ Plik musi być w formacie `wierzcholek1,wierzcholek2,waga` — jeden odcinek na 
 ```
 
 Domyślnie program używa `dane.txt` znajdującego się obok pliku exe.
+
+---
+
+## Budowanie wersji do oddania
+
+Zależności są zapisane w `requirements.txt`:
+
+```
+python3 -m pip install -r requirements.txt
+```
+
+### MacBook / macOS
+
+Na macOS Cython nie tworzy pliku `.pyd`. To jest rozszerzenie modułów Pythona
+dla Windowsa. Na MacBooku odpowiednikiem będzie jeden plik `.so`, np.:
+
+```
+elnino_core.cpython-311-darwin.so
+```
+
+To nadal jest jeden skompilowany moduł. Ten sam `setup.py` na Windowsie zbuduje
+jedną `.pyd`, a na macOS jedną `.so`.
+
+Projekt jest przygotowany tak, żeby Cython kompilował jeden wspólny moduł:
+
+```
+python3 setup.py build_ext --inplace
+```
+
+Na MacBooku można użyć skryptu:
+
+```
+chmod +x build_native_module.sh
+./build_native_module.sh
+```
+
+Pliki `dijkstra.py` i `graph_io.py` zostały jako zgodne importy pomocnicze, ale
+nie są osobno kompilowane do `.pyd` ani `.so`.
+
+### Aplikacja na macOS
+
+PyInstaller uruchomiony na MacBooku tworzy aplikację wykonywalną dla macOS, nie
+windowsowe `.exe`:
+
+```
+chmod +x build_mac.sh
+./build_mac.sh
+```
+
+Gotowy plik pojawi się tutaj:
+
+```
+dist/ElNino
+```
+
+Ręcznie można wykonać to samo poleceniem:
+
+```
+pyinstaller --onefile --name ElNino main.py --add-data "dane.txt:."
+```
+
+### Windows `.pyd` i `.exe`
+
+Jeśli docelowo potrzebny jest plik `.exe` dla Windowsa, trzeba zbudować go na
+Windowsie, np. skryptem:
+
+```
+build_exe.bat
+```
+
+Jeśli chcesz użyć osobnego środowiska `.venv` i zbudować tylko jedną `.pyd`,
+uruchom na Windowsie:
+
+```
+build_pyd_venv.bat
+```
+
+Na Windowsie po kompilacji Cythona powinien powstać jeden plik podobny do:
+
+```
+elnino_core.cp311-win_amd64.pyd
+```
+
+Skrypt instaluje zależności, buduje jedną bibliotekę `.pyd`, a potem tworzy:
+
+```
+dist/ElNino.exe
+```
+
+Ręcznie można wykonać to samo poleceniem:
+
+```
+pyinstaller --onefile --name ElNino main.py --add-data "dane.txt;."
+```
 
 ---
 

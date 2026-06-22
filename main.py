@@ -4,14 +4,14 @@ import argparse
 import os
 import sys
 
-from dijkstra import (
+from elnino_core import (
     dijkstra,
     dijkstra_paths,
     find_best_runway,
+    load_graph,
     reconstruct_path,
     total_cost,
 )
-from graph_io import load_graph
 
 LINE = "=" * 62
 DASH = "-" * 62
